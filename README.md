@@ -17,9 +17,9 @@ rope，jedi，pyflakes，autopep8はPython用のライブラリなのでCaskで�
 
 ## Install
 ```
-pip install rope
-pip install jedi
-pip install pyflakes
-pip install autopep8
-cask
+% git clone https://github.com/antonj/Highlight-Indentation-for-Emacs.git
+% pip install jedi
+% pip install pyflakes
+% pip install autopep8
+% cask
 ```
