@@ -1,3 +1,4 @@
+(package-initialize)
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -40,6 +41,22 @@
 
 ;;折り返し表示
 (setq truncate-lines t)
+
+;;yes-noをy-nに
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;;beep音
+(defun my-bell-function ()
+  (unless (memq this-command
+		'(isearch-abort abort-recursive-edit exit-minibuffer
+				keyboard-quit mwheel-scroll down up
+				next-line previous-line backward-char
+				forward-char))
+    (ding)))
+(setq ring-bell-function 'my-bell-function)
+
+;;メタキーをOptionに
+(setq mac-option-modifier 'meta)
 
 ;;Cask
 (when (require 'cask  nil t)
@@ -106,7 +123,12 @@
        '("~/.emacs.d/local/yasnippet/snippets"
 	 "~/.emacs.d/elisp/yasnippet/snippets"
 	 ))
-  (yas-global-mode 1))
+  (yas-global-mode t))
+
+;;highlight
+(add-to-list 'load-path "~/.emacs.d/vendor/Highlight-Indentation-for-Emacs")
+(require 'highlight-indentation)
+(set-face-background 'highlight-indentation-current-column-face "#99ffff")
 
 ;;auto-complete
 (when (require 'auto-complete-config nil t)
@@ -182,14 +204,18 @@
 (when (require 'python-mode nil t)
   (add-to-list 'auto-mode-alist '("\\.py$" . python-mode)))
 
+(add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
 ;;jedi
 (add-hook 'python-mode-hook
 	  'jedi:setup
+	  'py-autopep8-enable-on-save
 	  '(lambda ()
 	     (setq indent-tabs-mode nil)
 	     (setq indent-level 4)
 	     (setq python-indent 4)
-	     (setq tab-width 4)))
+	     (setq tab-width 4)
+	     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+	     ))
 (setq jedi:complete-on-dot t)
 
 ;;docstring comment
@@ -211,3 +237,21 @@
     (insert (format "%s\"\"\"" space))))
 
 (define-key python-mode-map (kbd "C-c d") 'python-docstring-comment)
+
+;;autopep8
+(require 'tramp-cmds)
+(when (load "flymake" t)
+  (defun flymake-pyflakes-init()
+    (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+			 'flymake-create-temp-inplace))
+	     (local-file (file-relative-name
+			  temp-file
+			  (file-name-directory buffer-file-name))))
+	(list "pyflakes" (list local-file)))))
+  (add-to-list 'flymake-allowed-file-name-masks
+	       '("\\.py\\'" flymake-pyflakes-init)))
+
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (flymake-mode t)))
