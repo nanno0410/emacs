@@ -126,9 +126,11 @@
   (yas-global-mode t))
 
 ;;highlight
-(add-to-list 'load-path "~/.emacs.d/vendor/Highlight-Indentation-for-Emacs")
+;(add-to-list 'load-path "~/.emacs.d/vendor/Highlight-Indentation-for-Emacs")
 (require 'highlight-indentation)
-(set-face-background 'highlight-indentation-current-column-face "#99ffff")
+(set-face-background 'highlight-indentation-face "#e3e3d3")
+(set-face-background 'highlight-indentation-current-column-face "#95799E")
+(add-hook 'highlight-indentation-mode-hook 'highlight-indentation-current-column-mode)
 
 ;;auto-complete
 (when (require 'auto-complete-config nil t)
@@ -204,7 +206,7 @@
 (when (require 'python-mode nil t)
   (add-to-list 'auto-mode-alist '("\\.py$" . python-mode)))
 
-(add-hook 'python-mode-hook 'highlight-indentation-current-column-mode)
+(add-hook 'python-mode-hook 'highlight-indentation-mode)
 ;;jedi
 (add-hook 'python-mode-hook
 	  'jedi:setup

@@ -30,3 +30,5 @@
 (depends-on "jedi")
 (depends-on "quickrun")
 (depends-on "swoop")
+(depends-on "highlight-indentation"
+	    :git "https://github.com/antonj/Highlight-Indentation-for-Emacs.git")
