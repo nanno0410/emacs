@@ -17,7 +17,6 @@ jedi，pyflakes，autopep8はPython用のライブラリなのでCaskでは対�
 
 ## Install
 ```
-% git clone https://github.com/antonj/Highlight-Indentation-for-Emacs.git
 % pip install jedi
 % pip install pyflakes
 % pip install autopep8
